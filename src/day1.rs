@@ -2,21 +2,14 @@ use std::collections::HashMap;
 
 #[aoc(day1, part1)]
 pub fn part1(input: &str) -> u64 {
-    let mut first = Vec::new();
-    let mut second = Vec::new();
-    for x in input.lines() {
-        let mut v = x.split_ascii_whitespace();
-        first.push(v.next().unwrap().parse::<i64>().unwrap());
-        second.push(v.next().unwrap().parse::<i64>().unwrap());
-    }
-    first.sort();
-    second.sort();
-
-    first
-        .iter()
-        .zip(second.iter())
-        .map(|(a, b)| a.abs_diff(*b))
-        .sum::<u64>()
+    let mut ints = input
+        .split_ascii_whitespace()
+        .enumerate()
+        .map(|(i, x)| (i & 1, x.parse::<i64>().unwrap()))
+        .collect::<Vec<_>>();
+    ints.sort_unstable();
+    let z = ints.len() / 2;
+    (0..z).map(|x| ints[x].1.abs_diff(ints[z + x].1)).sum()
 }
 
 #[aoc(day1, part2)]
