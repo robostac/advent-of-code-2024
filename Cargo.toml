@@ -2,10 +2,9 @@
 name = "advent-of-code-2024"
 version = "0.2.0"
 authors = ["robostac <res@robostac.co.uk"]
-edition = "2018"
+edition = "2021"
 
 [lib]
-name = "aoc_2024"
 path = "src/lib.rs"
 
 [dependencies]
