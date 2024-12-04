@@ -1,18 +1,9 @@
-// type SolutionInput = HashMap<(i64, i64), char>;
-type SolutionInput = (Vec<char>, i64);
-
-#[aoc_generator(day4)]
-fn generate(input: &str) -> SolutionInput {
-    let cc: Vec<char> = input.chars().collect();
-    let line = cc.iter().position(|x| *x == '\n').unwrap() as i64 + 1;
-    (cc, line)
-}
-
 #[aoc(day4, part1)]
-pub fn part1(input_struct: &SolutionInput) -> i64 {
+pub fn part1(input_struct: &str) -> i64 {
+    let input: Vec<char> = input_struct.chars().collect();
+    let line_length = input.iter().position(|x| *x == '\n').unwrap() as i64 + 1;
     let mut count = 0;
-    let line_length = input_struct.1;
-    let input = &input_struct.0;
+
     let is_mas = |mut p: i64, dp: i64| {
         for c in ['M', 'A', 'S'] {
             p += dp;
@@ -44,9 +35,9 @@ pub fn part1(input_struct: &SolutionInput) -> i64 {
 }
 
 #[aoc(day4, part2)]
-pub fn part2(input_struct: &SolutionInput) -> i64 {
-    let line_length = input_struct.1;
-    let input = &input_struct.0;
+pub fn part2(input_struct: &str) -> i64 {
+    let input: Vec<char> = input_struct.chars().collect();
+    let line_length = input.iter().position(|x| *x == '\n').unwrap() as i64 + 1;
     let mut count = 0;
     for (p, c) in input.iter().enumerate() {
         if *c == 'A' {
@@ -73,7 +64,7 @@ pub fn part2(input_struct: &SolutionInput) -> i64 {
 
 #[cfg(test)]
 mod tests {
-    use super::{generate, part1, part2};
+    use super::{part1, part2};
 
     const TESTLIST: &str = "MMMSXXMASM
 MSAMXMSMSA
@@ -87,10 +78,10 @@ MAMMMXMMMM
 MXMXAXMASX";
     #[test]
     fn sample1() {
-        assert_eq!(part1(&generate(TESTLIST)), 18);
+        assert_eq!(part1(TESTLIST), 18);
     }
     #[test]
     fn sample2() {
-        assert_eq!(part2(&generate(TESTLIST)), 9);
+        assert_eq!(part2(TESTLIST), 9);
     }
 }
