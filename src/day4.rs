@@ -1,5 +1,3 @@
-use std::collections::HashMap;
-
 #[derive(Debug, Clone)]
 pub enum Symbol {
     Do,
@@ -7,40 +5,43 @@ pub enum Symbol {
     Mul(i64, i64),
 }
 
-type SolutionInput = HashMap<(i64, i64), char>;
+// type SolutionInput = HashMap<(i64, i64), char>;
+type SolutionInput = (Vec<char>, i64);
 
 #[aoc_generator(day4)]
 fn generate(input: &str) -> SolutionInput {
-    let mut hm = HashMap::new();
-    for (y, s) in input.lines().enumerate() {
-        for (x, c) in s.chars().enumerate() {
-            hm.insert((x as i64, y as i64), c);
-        }
-    }
-    hm
+    let cc: Vec<char> = input.chars().collect();
+    let line = cc.iter().position(|x| *x == '\n').unwrap() as i64 + 1;
+    (cc, line)
 }
 
 #[aoc(day4, part1)]
 pub fn part1(input: &SolutionInput) -> i64 {
     let mut count = 0;
 
-    let is_mas = |mut p: (i64, i64), dx: i64, dy: i64| {
+    let is_mas = |mut p: i64, dp: i64| {
         for c in ['M', 'A', 'S'] {
-            p.0 += dx;
-            p.1 += dy;
-            if *input.get(&p).unwrap_or(&' ') != c {
+            p += dp;
+            if p < 0 || *input.0.get(p as usize).unwrap_or(&' ') != c {
                 return false;
             }
         }
         true
     };
-    for (p, c) in input.iter() {
+    for (p, c) in input.0.iter().enumerate() {
         if *c == 'X' {
-            for dx in -1..=1 {
-                for dy in -1..=1 {
-                    if is_mas(*p, dx, dy) {
-                        count += 1;
-                    }
+            for d in [
+                1,
+                -1,
+                input.1,
+                -input.1,
+                input.1 + 1,
+                input.1 - 1,
+                -input.1 + 1,
+                -input.1 - 1,
+            ] {
+                if is_mas(p as i64, d) {
+                    count += 1;
                 }
             }
         }
@@ -48,16 +49,15 @@ pub fn part1(input: &SolutionInput) -> i64 {
     count
 }
 
-const DIAGONALS: [(i64, i64); 4] = [(1, -1), (1, 1), (-1, 1), (-1, -1)];
 #[aoc(day4, part2)]
 pub fn part2(input: &SolutionInput) -> i64 {
     let mut count = 0;
-    for (p, c) in input.iter() {
+    for (p, c) in input.0.iter().enumerate() {
         if *c == 'A' {
             let mut mas_count = 0;
-            for (dx, dy) in DIAGONALS {
-                if 'M' == *input.get(&(p.0 + dx, p.1 + dy)).unwrap_or(&' ')
-                    && 'S' == *input.get(&(p.0 - dx, p.1 - dy)).unwrap_or(&' ')
+            for d in [input.1 + 1, input.1 - 1, -input.1 + 1, -input.1 - 1] {
+                if 'M' == *input.0.get((p as i64 + d) as usize).unwrap_or(&' ')
+                    && 'S' == *input.0.get((p as i64 - d) as usize).unwrap_or(&' ')
                 {
                     mas_count += 1;
                 }
