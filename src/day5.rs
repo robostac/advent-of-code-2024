@@ -52,7 +52,13 @@ pub fn part2(input_struct: &str) -> usize {
             let mut changed = false;
             while let Some(p) = valid(&z, &bad_mask) {
                 let v = z.remove(p);
-                z.insert(0, v);
+                for i in 0..z.len() {
+                    if (bad_mask[z[i]] & (1 << v)) > 0 {
+                        z.insert(i, v);
+                        break;
+                    }
+                }
+
                 changed = true;
             }
             if changed {
