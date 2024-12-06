@@ -13,13 +13,7 @@ pub fn part1(input_struct: &str) -> usize {
     seen.iter().filter(|x| **x > 0).count()
 }
 
-fn cycle_find(
-    c: &[char],
-    directions: &[i64],
-    seen: &mut [usize],
-    mut pos: i64,
-    mut dir: i64,
-) -> bool {
+fn cycle_find(c: &[char], directions: &[i64], seen: &mut [u8], mut pos: i64, mut dir: i64) -> bool {
     loop {
         let np = directions[dir as usize] + pos;
         let v = *c.get(np as usize).unwrap_or(&'\n');
