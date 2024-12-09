@@ -66,7 +66,7 @@ pub fn part2(input_struct: &str) -> usize {
         if let Some(mut empty_space) = cc.pop_front() {
             while let Some(p) = (1..=empty_space)
                 .filter(|x| files[*x].len() > 0)
-                .max_by_key(|x| (*files[*x].iter().last().unwrap_or(&0)))
+                .max_by_key(|x| (*files[*x].last().unwrap_or(&0)))
             {
                 let nid = files[p].pop().unwrap();
                 let sz = p;
