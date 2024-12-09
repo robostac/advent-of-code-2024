@@ -1,5 +1,9 @@
 use std::collections::VecDeque;
 
+fn quick_checksum(pos: usize, id: usize, sz: usize) -> usize {
+    ((sz * (sz - 1)) / 2 + (sz * pos)) * id
+}
+
 #[aoc(day9, part1)]
 pub fn part1(input_struct: &str) -> usize {
     let mut cc = input_struct
@@ -13,13 +17,11 @@ pub fn part1(input_struct: &str) -> usize {
     let mut fwd_id = 0;
     let mut checksum = 0;
     while let Some(v) = cc.pop_front() {
-        for _ in 0..v {
-            checksum += cur_pos * fwd_id;
-            cur_pos += 1;
-        }
+        checksum += quick_checksum(cur_pos, fwd_id, v);
+        cur_pos += v;
         fwd_id += 1;
-        if let Some(empty_space) = cc.pop_front() {
-            for _ in 0..empty_space {
+        if let Some(mut empty_space) = cc.pop_front() {
+            while empty_space > 0 {
                 if cc.len() == 0 {
                     break;
                 }
@@ -28,18 +30,15 @@ pub fn part1(input_struct: &str) -> usize {
                     back_id -= 1;
                     cc.pop_back();
                 }
-                checksum += cur_pos * back_id;
-                cur_pos += 1;
-                back_len -= 1;
+                let sz = empty_space.min(back_len);
+                checksum += quick_checksum(cur_pos, back_id, sz);
+                cur_pos += sz;
+                back_len -= sz;
+                empty_space -= sz;
             }
         }
     }
-    for _ in 0..back_len {
-        checksum += cur_pos * back_id;
-        cur_pos += 1;
-        back_len -= 1;
-    }
-    // for c in inpu/t_struct.chars() {}
+    checksum += quick_checksum(cur_pos, back_id, back_len);
     checksum
 }
 
@@ -66,13 +65,9 @@ pub fn part2(input_struct: &str) -> usize {
     while let Some(v) = cc.pop_front() {
         if used_ids[fwd_id] == false {
             used_ids[fwd_id] = true;
-            for _ in 0..v {
-                checksum += cur_pos * fwd_id;
-                cur_pos += 1;
-            }
-        } else {
-            cur_pos += v;
+            checksum += quick_checksum(cur_pos, fwd_id, v);
         }
+        cur_pos += v;
         fwd_id += 1;
         if let Some(mut empty_space) = cc.pop_front() {
             while let Some(p) = (1..=empty_space)
@@ -82,10 +77,8 @@ pub fn part2(input_struct: &str) -> usize {
                 let nid = files[p].pop().unwrap();
                 let sz = p;
                 if used_ids[nid] == false {
-                    for _ in 0..sz {
-                        checksum += cur_pos * nid;
-                        cur_pos += 1;
-                    }
+                    checksum += quick_checksum(cur_pos, nid, sz);
+                    cur_pos += sz;
                     empty_space -= sz;
                     used_ids[nid] = true;
                 }
