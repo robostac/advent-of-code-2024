@@ -49,19 +49,13 @@ pub fn part2(input_struct: &str) -> usize {
         .map(|x| x.to_digit(10).unwrap() as usize)
         .collect::<VecDeque<_>>();
     let mut files = vec![Vec::new(); 10];
-    let mut id = 0;
-    let mut pos = 0;
-    for (i, x) in cc.iter().enumerate() {
-        if i % 2 == 0 {
-            files[*x].push(id);
-            id += 1;
-        }
-        pos += x
+    for (i, x) in cc.iter().step_by(2).enumerate() {
+        files[*x].push(i);
     }
     let mut fwd_id = 0;
     let mut cur_pos = 0;
     let mut checksum = 0;
-    let mut used_ids = vec![false; cc.len()];
+    let mut used_ids = vec![false; cc.len() + 1 / 2];
     while let Some(v) = cc.pop_front() {
         if used_ids[fwd_id] == false {
             used_ids[fwd_id] = true;
