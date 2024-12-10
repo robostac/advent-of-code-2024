@@ -7,6 +7,7 @@ fn quick_checksum(pos: usize, id: usize, sz: usize) -> usize {
 #[aoc(day9, part1)]
 pub fn part1(input_struct: &str) -> usize {
     let mut cc = input_struct
+        .trim_ascii_end()
         .chars()
         .map(|x| x.to_digit(10).unwrap() as usize)
         .collect::<VecDeque<_>>();
@@ -45,6 +46,7 @@ pub fn part1(input_struct: &str) -> usize {
 #[aoc(day9, part2)]
 pub fn part2(input_struct: &str) -> usize {
     let mut cc = input_struct
+        .trim_ascii_end()
         .chars()
         .map(|x| x.to_digit(10).unwrap() as usize)
         .collect::<VecDeque<_>>();

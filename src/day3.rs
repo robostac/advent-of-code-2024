@@ -9,7 +9,7 @@ fn symbols(input: &str) -> Vec<Symbol> {
     let mut start = None;
     let mut d = false;
     let mut sym = Vec::new();
-    for (i, c) in input.chars().enumerate() {
+    for (i, c) in input.trim_ascii_end().chars().enumerate() {
         if c == 'm' {
             start = Some(i);
             d = false;
