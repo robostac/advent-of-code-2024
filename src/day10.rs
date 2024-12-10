@@ -35,7 +35,7 @@ pub fn part1(input_struct: &str) -> i64 {
                 posi64 - line_length,
             ] {
                 if let Some(new_v) = input.get(next_pos as usize) {
-                    if *new_v == tgt {
+                    if *new_v == tgt && reachable[next_pos as usize] != i {
                         current.push(next_pos as usize);
                         reachable[next_pos as usize] = i;
                     }
