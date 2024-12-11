@@ -1,27 +1,21 @@
 use std::collections::HashMap;
 
-fn solve(x: &[i64], count: usize) -> i64 {
+fn solve(x: &[u64], count: usize) -> u64 {
     let mut hm = HashMap::new();
+    let mut nhm = HashMap::new();
     for p in x {
-        *hm.entry(*p).or_insert(0) += 1;
+        *nhm.entry(*p).or_insert(0) += 1;
     }
     for _ in 0..count {
-        let mut nhm = HashMap::new();
-        for (s, c) in hm {
+        std::mem::swap(&mut hm, &mut nhm);
+        nhm.clear();
+        for (&s, &c) in hm.iter() {
             if s == 0 {
                 *nhm.entry(1).or_insert(0) += c;
             } else {
-                let mut digits = 1;
-                let mut counter = 10;
-                while s >= counter {
-                    counter *= 10;
-                    digits += 1;
-                }
+                let digits = s.ilog10() + 1;
                 if digits % 2 == 0 {
-                    let mut div = 1;
-                    for _ in 0..digits / 2 {
-                        div *= 10;
-                    }
+                    let div = 10u64.pow(digits / 2);
                     *nhm.entry(s % div).or_insert(0) += c;
                     *nhm.entry(s / div).or_insert(0) += c;
                 } else {
@@ -29,25 +23,24 @@ fn solve(x: &[i64], count: usize) -> i64 {
                 }
             }
         }
-        hm = nhm;
     }
     hm.values().sum()
 }
 
 #[aoc(day11, part1)]
-pub fn part1(input_struct: &str) -> i64 {
+pub fn part1(input_struct: &str) -> u64 {
     let q = input_struct
         .split_ascii_whitespace()
-        .map(|x| x.parse::<i64>().unwrap())
+        .map(|x| x.parse::<u64>().unwrap())
         .collect::<Vec<_>>();
     solve(&q, 25)
 }
 
 #[aoc(day11, part2)]
-pub fn part2(input_struct: &str) -> i64 {
+pub fn part2(input_struct: &str) -> u64 {
     let q = input_struct
         .split_ascii_whitespace()
-        .map(|x| x.parse::<i64>().unwrap())
+        .map(|x| x.parse::<u64>().unwrap())
         .collect::<Vec<_>>();
     solve(&q, 75)
 }
@@ -63,6 +56,6 @@ mod tests {
     }
     #[test]
     fn sample2() {
-        assert_eq!(part2(TESTLIST), 81);
+        assert_eq!(part2(TESTLIST), 65601038650482); //not from aoc, calculated manually
     }
 }
