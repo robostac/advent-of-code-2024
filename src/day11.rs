@@ -24,7 +24,7 @@ fn solve(x: &[u64], count: usize) -> u64 {
             }
         }
     }
-    hm.values().sum()
+    nhm.values().sum()
 }
 
 #[aoc(day11, part1)]
