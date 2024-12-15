@@ -74,7 +74,7 @@ pub fn part2(input_struct: &str) -> i64 {
 
 #[cfg(test)]
 mod tests {
-    use super::{parse_input, part1, part2, solve_p1};
+    use super::{parse_input, solve_p1};
 
     const TESTLIST: &str = "p=0,4 v=3,-3
 p=6,3 v=-1,-3
