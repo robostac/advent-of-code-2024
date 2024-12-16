@@ -1,16 +1,28 @@
-use std::collections::VecDeque;
+use std::{collections::VecDeque, usize};
 fn do_move(p: usize, d: i64) -> usize {
     (p as i64 + d) as usize
 }
 
-fn make_scores(input: &[char], start: usize, line_length: i64) -> Vec<[usize; 4]> {
+fn make_scores(
+    input: &[char],
+    start: usize,
+    line_length: i64,
+    end: usize,
+) -> (Vec<[usize; 4]>, usize) {
     let directions = [1, line_length, -1, -line_length];
     let mut scores = vec![[usize::MAX; 4]; input.len()];
     let mut q = VecDeque::new();
     q.push_back((start, 0));
     scores[start][0] = 0;
+    let mut bscore = usize::MAX;
     while let Some((p, d)) = q.pop_front() {
         let cur_score = scores[p][d];
+        if cur_score > bscore {
+            continue;
+        }
+        if p == end {
+            bscore = bscore.min(cur_score);
+        }
         for (np, nd, ns) in [
             (do_move(p, directions[d]), d, 1),
             (p, (d + 1) % 4, 1000),
@@ -24,7 +36,7 @@ fn make_scores(input: &[char], start: usize, line_length: i64) -> Vec<[usize; 4]
             }
         }
     }
-    scores
+    (scores, bscore)
 }
 
 #[aoc(day16, part1)]
@@ -36,8 +48,8 @@ pub fn part1(input_struct: &str) -> usize {
 
     input[start] = '.';
     input[end] = '.';
-    let scores = make_scores(&input, start, line_length);
-    *scores[end].iter().min().unwrap()
+    let (_, v) = make_scores(&input, start, line_length, end);
+    v
 }
 
 struct Maze<'a> {
@@ -83,8 +95,8 @@ pub fn part2(input_struct: &str) -> usize {
     input[start] = '.';
     input[end] = '.';
     let directions = [1, line_length, -1, -line_length];
-    let scores = make_scores(&input, start, line_length);
-    let bscore = *scores[end].iter().min().unwrap();
+    let (scores, bscore) = make_scores(&input, start, line_length, end);
+
     let mut best = vec![0; input.len()];
     let mz = Maze {
         input: &input,
