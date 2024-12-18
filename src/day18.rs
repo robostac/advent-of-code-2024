@@ -50,11 +50,10 @@ pub fn part1(input_struct: &str) -> i64 {
 }
 
 fn solve2(width: i64, height: i64, bytes: &[(i64, i64)]) -> String {
-    let mut bad = vec![vec![i64::MAX; height as usize]; width as usize];
+    let mut bad = vec![vec![0; height as usize]; width as usize];
     let mut vdq = VecDeque::new();
     vdq.push_back((0i64, 0i64));
 
-    bad[0][0] = 0;
     for (x, y) in bytes.iter() {
         bad[*x as usize][*y as usize] = -1;
     }
@@ -72,10 +71,10 @@ fn solve2(width: i64, height: i64, bytes: &[(i64, i64)]) -> String {
                     continue;
                 }
                 let z = bad[nx as usize][ny as usize];
-                if z <= t + 1 {
+                if z != 0 {
                     continue;
                 }
-                bad[nx as usize][ny as usize] = t + 1;
+                bad[nx as usize][ny as usize] = 1;
                 if nx == width - 1 && ny == height - 1 {
                     return format!("{},{}", bytes[ans as usize].0, bytes[ans as usize].1);
                 }
@@ -84,16 +83,16 @@ fn solve2(width: i64, height: i64, bytes: &[(i64, i64)]) -> String {
         } else {
             ans -= 1;
             let (x, y) = bytes[ans];
-            bad[x as usize][y as usize] = i64::MAX;
+            bad[x as usize][y as usize] = 0;
             for (nx, ny) in [(x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)] {
                 if nx < 0 || nx >= height || ny < 0 || ny >= height {
                     continue;
                 }
                 let z = bad[nx as usize][ny as usize];
-                if z < 0 || z == i64::MAX {
-                    continue;
+                if z == 1 {
+                    vdq.push_back((nx, ny));
+                    break;
                 }
-                vdq.push_back((nx, ny));
             }
         }
     }
