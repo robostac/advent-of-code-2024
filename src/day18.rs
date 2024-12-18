@@ -35,13 +35,13 @@ fn solve(width: i64, height: i64, bytes: &[(i64, i64)]) -> Option<i64> {
                 continue;
             }
             bad[nx as usize][ny as usize] = t + 1;
+            if nx == width - 1 && ny == height - 1 {
+                return Some(t + 1);
+            }
             vdq.push_back((nx, ny));
         }
     }
-    if bad[width as usize - 1][height as usize - 1] == i64::MAX {
-        return None;
-    }
-    Some(bad[width as usize - 1][height as usize - 1])
+    None
 }
 
 #[aoc(day18, part1)]
