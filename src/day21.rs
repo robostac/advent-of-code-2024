@@ -240,6 +240,6 @@ mod tests {
 
     #[test]
     fn sample2() {
-        assert_eq!(part2(&TESTLIST), 16);
+        assert_eq!(part2(&TESTLIST), 154115708116294);
     }
 }
