@@ -29,12 +29,12 @@ pub fn part2(input_struct: &str) -> i64 {
 
         let mut last = p % 10;
         let mut seq = 0;
-        for i in 1..2000 {
+        for i in 0..2000 {
             p = next(p);
             let diff = (p % 10) - last;
             seq = ((seq & 0x7FFF) << 5) + (diff + 9);
             last = p % 10;
-            if i >= 4 {
+            if i >= 3 {
                 let s = seq as usize;
                 if seen[s] != iter {
                     ans[s] += last;
