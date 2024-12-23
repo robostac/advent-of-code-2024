@@ -10,9 +10,8 @@ pub fn part1(input_struct: &str) -> i64 {
     let mut links = vec![Vec::new(); MAX_IDX];
     let mut ll = [false; MAX_IDX * MAX_IDX];
     for l in input_struct.lines() {
-        let (a, b) = l.split_once('-').unwrap();
-        let va = val(&a);
-        let vb = val(&b);
+        let va = val(&l);
+        let vb = val(&l[3..]);
         if va < vb {
             links[va].push(vb);
         } else {
@@ -52,9 +51,8 @@ pub fn part2(input_struct: &str) -> String {
     let mut links = vec![Vec::new(); MAX_IDX];
     let mut ll = [false; MAX_IDX * MAX_IDX];
     for l in input_struct.lines() {
-        let (a, b) = l.split_once('-').unwrap();
-        let va = val(&a);
-        let vb = val(&b);
+        let va = val(&l);
+        let vb = val(&l[3..]);
         if va < vb {
             links[va].push(vb);
         } else {
