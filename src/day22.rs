@@ -13,7 +13,7 @@ pub fn part1(input_struct: &str) -> i64 {
 
 fn next(mut x: i64) -> i64 {
     x = ((x * 64) ^ x) % 16777216;
-    x = ((x / 32) ^ x);
+    x = (x / 32) ^ x;
     x = ((x * 2048) ^ x) % 16777216;
     x
 }

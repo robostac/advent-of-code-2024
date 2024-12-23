@@ -13,28 +13,26 @@ pub fn part1(input_struct: &str) -> i64 {
         let (a, b) = l.split_once('-').unwrap();
         let va = val(&a);
         let vb = val(&b);
-        links[va].push(vb);
+        if va < vb {
+            links[va].push(vb);
+        } else {
+            links[vb].push(va);
+        }
         ll[va * MAX_IDX + vb] = true;
-        links[vb].push(va);
         ll[vb * MAX_IDX + va] = true;
     }
-    let tval = 't' as usize - 'a' as usize;
-    let start = tval * 26;
     let mut total = 0;
-    // let mut hs = HashSet::new();
-
-    for z in 0..26 {
-        let p1 = start + z;
-        for (i, &p2) in links[p1].iter().enumerate() {
-            if p2 / 26 == tval && p2 < p1 {
-                continue;
-            }
-            for &p3 in links[p1].iter().skip(i + 1) {
-                if p3 / 26 == tval && p3 < p1 {
-                    continue;
-                }
-                if ll[p3 * MAX_IDX + p2] {
-                    total += 1;
+    let tval = 't' as usize - 'a' as usize;
+    for (i, ilink) in links.iter().enumerate() {
+        if ilink.len() < 2 {
+            continue;
+        }
+        for (llink, l) in ilink.iter().enumerate() {
+            for &j in ilink[0..llink].iter() {
+                if ll[*l * MAX_IDX + j] {
+                    if i / 26 == tval || *l / 26 == tval || j / 26 == tval {
+                        total += 1;
+                    }
                 }
             }
         }
@@ -66,18 +64,23 @@ pub fn part2(input_struct: &str) -> String {
         ll[vb * MAX_IDX + va] = true;
     }
     let mut biggest = Vec::new();
+
     for (i, ilink) in links.iter().enumerate() {
         if ilink.len() < biggest.len() {
             continue;
         }
         let mut queue = Vec::new();
         queue.push((i, 0, 1));
-
+        let mut bg = biggest.len();
+        let mut rem = ilink.len();
         for l in ilink.iter() {
             let longest = queue.len();
             for j in 0..longest {
                 let mut idx = j;
                 let mut linked = true;
+                if queue[j].2 + rem < bg {
+                    continue;
+                }
                 while queue[idx].0 != i {
                     if ll[queue[idx].0 * MAX_IDX + *l] == false {
                         linked = false;
@@ -87,8 +90,10 @@ pub fn part2(input_struct: &str) -> String {
                 }
                 if linked {
                     queue.push((*l, j, queue[j].2 + 1));
+                    bg = bg.max(queue[j].2 + 1);
                 }
             }
+            rem -= 1;
         }
         let mut test = Vec::new();
         let mut node = queue.iter().max_by_key(|x| x.2).unwrap();

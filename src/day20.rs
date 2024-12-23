@@ -1,7 +1,4 @@
-use std::{
-    collections::{HashMap, VecDeque},
-    usize,
-};
+use std::collections::VecDeque;
 fn do_move(p: usize, d: i64) -> usize {
     (p as i64 + d) as usize
 }
